@@ -12,6 +12,8 @@ class PlayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+    // Dismissible Card to Add Swipe Action/s
     return Dismissible(
       key: Key(player.id),
       direction: DismissDirection.endToStart,

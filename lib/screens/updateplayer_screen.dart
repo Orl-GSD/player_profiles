@@ -55,7 +55,7 @@ class _UpdatePlayerScreenState extends State<UpdatePlayerScreen> {
 void _saveChanges() {
   if (_formKey.currentState!.validate()) {
     final updatedPlayer = Player(
-      id: widget.player.id, // ← CRITICAL: Preserve the original ID
+      id: widget.player.id,
       nickname: nicknameController.text.trim(),
       name: nameController.text.trim(),
       contactNum: contactNumController.text.trim(),
@@ -69,6 +69,7 @@ void _saveChanges() {
     );
     Navigator.pop(context, updatedPlayer);
 
+  // Snackbar for Successful Player Update
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Row(
@@ -93,6 +94,7 @@ void _saveChanges() {
   }
 }
 
+  // Delete Confirmation Modal and Snackbar for Successful Player Deletion
   void _deletePlayer() async {
     final confirmDelete = await showDialog<bool>(
       context: context,
@@ -125,7 +127,6 @@ void _saveChanges() {
         ],
       ),
     );
-
     if (confirmDelete == true) {
       Navigator.pop(context, 'delete');
 
@@ -158,12 +159,16 @@ void _saveChanges() {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+            ),
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
                 decoration: BoxDecoration(
                   color: Colors.white,
                 ),
@@ -183,7 +188,7 @@ void _saveChanges() {
                       ),
                       const SizedBox(height: 24),
 
-                      // 🧾 Input fields...
+                      // Name Input Field
                       InputField(
                         controller: nameController,
                         labelText: 'Full Name',
@@ -191,7 +196,10 @@ void _saveChanges() {
                         validator: (value) =>
                             value == null || value.trim().isEmpty ? 'Full name is required' : null,
                       ),
+
                       const SizedBox(height: 16),
+                      
+                      // Nickname Input Field
                       InputField(
                         controller: nicknameController,
                         labelText: 'Nickname',
@@ -199,7 +207,10 @@ void _saveChanges() {
                         validator: (value) =>
                             value == null || value.trim().isEmpty ? 'Nickname is required' : null,
                       ),
+
                       const SizedBox(height: 16),
+                      
+                      // Contact Number Input Field
                       InputField(
                         controller: contactNumController,
                         labelText: 'Mobile Number',
@@ -215,7 +226,10 @@ void _saveChanges() {
                           return null;
                         },
                       ),
+
                       const SizedBox(height: 16),
+                      
+                      // Email Address Input Field
                       InputField(
                         controller: emailAdController,
                         labelText: 'Email Address',
@@ -232,7 +246,10 @@ void _saveChanges() {
                           return null;
                         },
                       ),
+
                       const SizedBox(height: 16),
+                      
+                      // Address Input Field
                       InputField(
                         controller: addressController,
                         labelText: 'Home Address',
@@ -241,16 +258,19 @@ void _saveChanges() {
                         validator: (value) =>
                             value == null || value.trim().isEmpty ? 'Address is required' : null,
                       ),
+
                       const SizedBox(height: 16),
+                      
+                      // Remarks Input Field
                       InputField(
                         controller: remarksController,
                         labelText: 'Remarks',
                         prefixIcon: Icons.book,
                         maxLines: 3,
-                        validator: (value) => null,
                       ),
                       const SizedBox(height: 24),
 
+                      // Level Range Slider
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -279,8 +299,10 @@ void _saveChanges() {
                           ),
                         ],
                       ),
+
                       const SizedBox(height: 24),
 
+                      // Actions (Delete, Cancel, and Update Buttons)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -332,6 +354,7 @@ void _saveChanges() {
                 ),
               ),
             ],
+          ),
           ),
         ),
       ),

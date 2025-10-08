@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:player_profiles/model/player.dart';
 
-// Add these mapping constants
+// Levels
 const Map<Level, String> levelString = {
   Level.beginner: 'Beginner',
   Level.intermediate: 'Intermediate',
@@ -12,6 +12,7 @@ const Map<Level, String> levelString = {
   Level.openPlayer: 'Open',
 };
 
+// Sublevels or Strengths
 const Map<Strength, String> strengthString = {
   Strength.weak: 'Weak',
   Strength.mid: 'Mid',
@@ -126,20 +127,6 @@ class _LevelSliderState extends State<LevelSlider> {
     return (level, strength);
   }
 
-  String _getPositionLabel(double value) {
-    final (level, strength) = _sliderValueToLevel(value);
-    final levelDef = _levelDefinitions.firstWhere((def) => def.level == level);
-    
-    if (level == Level.openPlayer) {
-      return levelDef.label;
-    }
-    
-    final strengthLabel = strength != null 
-        ? (strengthString[strength]?.substring(0, 1) ?? '') 
-        : '';
-    return '$strengthLabel ${levelDef.label}'.trim();
-  }
-
   String _getPositionDescription(double value) {
     final (level, strength) = _sliderValueToLevel(value);
     
@@ -200,6 +187,7 @@ class _LevelSliderState extends State<LevelSlider> {
     );
   }
 
+  // Labels Above the Slider
   Widget _buildVisualScale() {
     return Column(
       children: [
@@ -214,6 +202,7 @@ class _LevelSliderState extends State<LevelSlider> {
     );
   }
 
+  // Level Indicator
   Widget _buildLevelIndicator(LevelDefinition levelDef) {
     final isOpenLevel = levelDef.level == Level.openPlayer;
     
@@ -248,6 +237,7 @@ class _LevelSliderState extends State<LevelSlider> {
     );
   }
 
+  // Slider itself
   Widget _buildRangeSlider() {
     return SliderTheme(
       data: SliderTheme.of(context).copyWith(
@@ -269,6 +259,7 @@ class _LevelSliderState extends State<LevelSlider> {
     );
   }
 
+  // Level Current Selection (in Add/Update Player Screens)
   Widget _buildCurrentSelection() {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -294,6 +285,7 @@ class _LevelSliderState extends State<LevelSlider> {
     );
   }
 
+  //Selection Chip or Shape (in Add/Update Player Screens)
   Widget _buildSelectionChip(double value) {
     return Column(
       children: [

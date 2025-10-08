@@ -23,7 +23,7 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
     filteredPlayers = List.from(_players);
   }
 
-  // 🔍 Search
+  // Search Player Function
   void _searchPlayer(String query) {
     final filtered = _players.where((player) {
       final nameLower = player.name.toLowerCase();
@@ -38,6 +38,7 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
     });
   }
 
+  // Add Player Function
   void _navigateToAddPlayer() async {
     final newPlayer = await Navigator.push<Player>(
       context,
@@ -52,6 +53,7 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
     }
   }
 
+  // Update Player Function
   void _updatePlayer(Player updatedPlayer) {
     setState(() {
       // Try multiple identifiers since we don't have ID
@@ -70,6 +72,7 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
     });
   }
 
+  // Delete Player Function
   void _deletePlayer(Player deletedPlayer) {
     setState(() {
       _players.removeWhere((p) => p.id == deletedPlayer.id); // Use ID instead of nickname
@@ -98,6 +101,8 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
               ),
               child: Column(
                 children: [
+                  
+                  // Top Bar
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -110,6 +115,8 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
                           fontFamily: 'Roboto',
                         ),
                       ),
+                      
+                      // Add Player Button
                       TextButton.icon(
                         onPressed: _navigateToAddPlayer,
                         icon: const Icon(Icons.add, color: Colors.white),
@@ -135,6 +142,8 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
+                  
+                  // Search Bar
                   Focus(
                     onFocusChange: (hasFocus) {},
                     child: Builder(
@@ -175,6 +184,8 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
                 ],
               ),
             ),
+            
+            // Search bar filters players and updates UI
             Expanded(
               child: filteredPlayers.isEmpty
                   ? const Center(

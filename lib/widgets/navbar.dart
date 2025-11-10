@@ -19,7 +19,7 @@ class _NavBar extends State<NavBar> {
   int _selectedIndex = 0;
 
   // The list of screens that correspond to the tabs
-  static const List<Widget> _screens = <Widget>[
+  final List<Widget> _screens = <Widget>[
     PlayerProfilesScreen(),
     GamesScreen(),
     UserSettingsScreen(),
@@ -36,7 +36,10 @@ class _NavBar extends State<NavBar> {
   Widget build(BuildContext context) {
     return Scaffold(
       // The body is set to the currently selected screen
-      body: _screens[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _screens,
+      ),
       
       // This is the bottom navigation bar
       bottomNavigationBar: BottomNavigationBar(
@@ -56,7 +59,9 @@ class _NavBar extends State<NavBar> {
         ],
         currentIndex: _selectedIndex,    // Highlights the current tab
         selectedItemColor: Colors.blueAccent, // Color for the active tab
-        onTap: _onItemTapped,           // Calls our function on tap
+        onTap: _onItemTapped,
+        backgroundColor: Colors.white,
+        unselectedItemColor: Colors.grey[600],           // Calls our function on tap
       ),
     );
   }

@@ -11,7 +11,7 @@ class ViewGameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormat = NumberFormat.currency(locale: 'en_US', symbol: '\$');
+    final currencyFormat = NumberFormat.currency(locale: 'en_PH', symbol: '₱');
 
     return Scaffold(
       appBar: AppBar(

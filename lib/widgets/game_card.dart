@@ -108,21 +108,39 @@ class GameCard extends StatelessWidget {
               ),
               
               // --- Show schedule info if it exists ---
-              if (game.schedules.isNotEmpty) ...[
-                const Divider(height: 20),
-                InfoChip(
-                  icon: Icons.calendar_today_outlined,
-                  text: '${game.schedules.first.dateString} (${game.schedules.first.timeRangeString})',
-                ),
-                if (game.schedules.length > 1)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 22, top: 4),
-                    child: Text(
-                      '+ ${game.schedules.length - 1} more...',
-                      style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  if (game.schedules.isNotEmpty) ...[
+                    const Divider(height: 20),
+
+                    // Always show the first schedule
+                    InfoChip(
+                      icon: Icons.calendar_today_outlined,
+                      text:
+                          '${game.schedules[0].dateString} (${game.schedules[0].timeRangeString})',
                     ),
-                  ),
-              ]
+
+                    // Show the second schedule if it exists
+                    if (game.schedules.length >= 2)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 4), // Indent second line
+                        child: InfoChip(
+                          icon: Icons.calendar_today_outlined,
+                          text:
+                              '${game.schedules[1].dateString} (${game.schedules[1].timeRangeString})',
+                        ),
+                      ),
+
+                    // Show "+ more" text if there are MORE than 2 schedules
+                    if (game.schedules.length > 2)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 22, top: 4),
+                        child: Text(
+                          '+ ${game.schedules.length - 2} more...', // Changed to -2
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.black54),
+                        ),
+                      ),
+                  ]
             ],
           ),
         ),

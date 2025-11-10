@@ -88,8 +88,16 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('User Settings'),
+        backgroundColor: Colors.white,
+        title: const Text('User Settings',
+        style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w800,
+            color: Colors.blueAccent,
+          ),
+        ),
         // Add a save button to the app bar
         actions: [
           TextButton(

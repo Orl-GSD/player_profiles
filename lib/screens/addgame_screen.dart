@@ -108,13 +108,24 @@ class _AddGameScreenState extends State<AddGameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromRGBO(251, 251, 251, 1),
       appBar: AppBar(
-        title: const Text('Add New Game'),
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        title: const Text('Add New Game',
+        style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w800,
+            color: Colors.blueAccent,
+          ),
+        ),
         actions: [
           // Cancel Button
           TextButton(
             onPressed: () => Navigator.pop(context), // Just close the screen
-            child: const Text('Cancel'),
+            child: const Text('Cancel',
+              style: TextStyle(color: Colors.blueAccent, fontSize: 16),
+            ),
           )
         ],
       ),
@@ -168,6 +179,7 @@ class _AddGameScreenState extends State<AddGameScreen> {
                             itemBuilder: (ctx, index) {
                               final schedule = _schedules[index];
                               return Card(
+                                color: const Color.fromARGB(255, 255, 255, 255),
                                 child: ListTile(
                                   leading: const Icon(Icons.timer),
                                   title: Text('Court ${schedule.courtNumber} (${schedule.timeRangeString})'),

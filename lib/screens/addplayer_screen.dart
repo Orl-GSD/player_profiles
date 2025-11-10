@@ -58,12 +58,13 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Row(
-            spacing: 10,
+            // spacing: 10, // 'spacing' is not a valid property for Row
             children: [
               Icon(
                 Icons.check_circle,
                 color: Colors.white
               ),
+              SizedBox(width: 10), // Use SizedBox for spacing
               Text(
                 'Player added successfully!',
                 style: TextStyle(
@@ -82,12 +83,13 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Row(
-            spacing: 10,
+            // spacing: 10, // 'spacing' is not a valid property for Row
             children: [
               Icon(
                 Icons.error_outline_outlined,
                 color: Colors.white
               ),
+              SizedBox(width: 10), // Use SizedBox for spacing
               Text(
                 'Please fix the errors before submitting.',
                 style: TextStyle(
@@ -117,12 +119,13 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-           decoration: BoxDecoration(
-            color: Colors.white,
-           ),
+            decoration: BoxDecoration(
+             color: Colors.white,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -137,14 +140,35 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Add New Player',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.blueAccent,
-                          ),
+                        
+                        // --- MODIFICATION 1: Title and Cancel Button Row ---
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Add New Player',
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.blueAccent,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  color: Colors.blueAccent,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+                        // --- END MODIFICATION ---
+
                         const SizedBox(height: 24),
 
                         // Name Input Field
@@ -263,31 +287,11 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
 
                         const SizedBox(height: 24),
 
-                        // Actions (Cancel and Submit Buttons)
+                        // --- MODIFICATION 2: Removed Cancel Button ---
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            // Cancel Button
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              style: TextButton.styleFrom(
-                                backgroundColor: Colors.grey[400],
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 48, vertical: 14),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: const Text(
-                                'Cancel',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
+                            // Cancel Button REMOVED
 
                             // Submit Button
                             TextButton(

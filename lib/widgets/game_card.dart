@@ -99,17 +99,17 @@ class GameCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [  
-                  // --- Info Chip: Total Cost ---
                   InfoChip(
-                    icon: Icons.monetization_on_outlined,
-                    text: currencyFormat.format(game.totalCost),
+                    icon: Icons.people_outline,
+                    text: '${game.playerCount} Players',
                   ),
+                  Text(currencyFormat.format(game.totalCost)),
                 ],
               ),
               
               // --- Show schedule info if it exists ---
                   if (game.schedules.isNotEmpty) ...[
-                    const Divider(height: 20),
+                    const Divider(height: 20, color: Color.fromARGB(255, 187, 187, 187)),
 
                     // Always show the first schedule
                     InfoChip(

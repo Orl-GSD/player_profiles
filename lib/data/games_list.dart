@@ -1,14 +1,9 @@
-// lib/data/games_list.dart
-
 import 'package:player_profiles/model/game.dart';
 import 'package:player_profiles/model/game_schedule.dart';
-import 'package:player_profiles/data/players_list.dart'; // Import your players list
+import 'package:player_profiles/data/players_list.dart';
 
-// Helper dates
 final DateTime today = DateTime.now();
 final DateTime nextWeek = today.add(const Duration(days: 7));
-
-// --- Sample Schedules ---
 
 // Schedules for Game 1 (Today)
 final game1_schedule1 = GameSchedule(
@@ -47,8 +42,8 @@ final List<Game> games = [
     shuttlePrice: 50.0,
     divideCourtEqually: true,
     schedules: [game1_schedule1, game1_schedule2],
-    // Take the first 3 players from your list
-    //players: players.sublist(0, 3), 
+    players: players.sublist(0, 3), 
+    shuttlesUsed: 3,
   ),
   Game(
     id: 'g2',
@@ -58,12 +53,11 @@ final List<Game> games = [
     shuttlePrice: 55.0,
     divideCourtEqually: true,
     schedules: [game2_schedule1],
-    // Take all 5 players from your list
-    //players: players, 
+    players: players, 
+    shuttlesUsed: 5,
   ),
   Game(
     id: 'g3',
-    // No title, will default to "Game on [Date]"
     courtName: 'PowerSmash Badminton Center',
     courtRate: 150.0,
     shuttlePrice: 50.0,
@@ -72,12 +66,12 @@ final List<Game> games = [
       GameSchedule(
         id: 'g3s1',
         courtNumber: '3',
-        gameDate: today.add(const Duration(days: 2)), // Two days from now
-        startTime: DateTime(today.year, today.month, today.day + 2, 19, 0), // 7:00 PM
-        endTime: DateTime(today.year, today.month, today.day + 2, 22, 0), // 10:00 PM
+        gameDate: today.add(const Duration(days: 2)),
+        startTime: DateTime(today.year, today.month, today.day + 2, 19, 0),
+        endTime: DateTime(today.year, today.month, today.day + 2, 22, 0),
       ),
     ],
-    // Empty player list
-    //players: [],
+    players: [],
+    shuttlesUsed: 0,
   ),
 ];

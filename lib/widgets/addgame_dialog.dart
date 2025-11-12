@@ -119,7 +119,14 @@ class _AddGameScheduleDialogState extends State<AddGameScheduleDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Schedule'),
+      backgroundColor: Colors.white,
+      title: const Text('Add Schedule',
+        style: TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.w800,
+          color: Colors.blueAccent,
+        ),
+      ),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -169,12 +176,14 @@ class _AddGameScheduleDialogState extends State<AddGameScheduleDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context), // Close without data
-          child: const Text('Cancel'),
+          child: const Text('Cancel',
+            style: TextStyle(color: Color.fromARGB(255, 45, 45, 45)),
+          ),
         ),
         ElevatedButton(
           onPressed: _submit,
           style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
-          child: const Text('Add', style: TextStyle(color: Colors.white)),
+          child: const Text('Add Schedule', style: TextStyle(color: Colors.white)),
         ),
       ],
     );

@@ -11,7 +11,8 @@ class Game {
   double courtRate;
   double shuttlePrice;
   bool divideCourtEqually;
-  //List<Player> players; 
+  int shuttlesUsed;
+  List<Player> players; 
 
   Game({
     required this.id,
@@ -21,8 +22,9 @@ class Game {
     required this.courtRate,
     required this.shuttlePrice,
     required this.divideCourtEqually,
-   //List<Player>? players,
-  }); //: players = players ?? [];
+    this.shuttlesUsed = 0,
+   List<Player>? players,
+  }) : players = players ?? [];
 
   String get displayName {
     if (gameTitle != null && gameTitle!.isNotEmpty) {
@@ -34,7 +36,7 @@ class Game {
     return 'Untitled Game';
   }
 
-  //int get playerCount => players.length;
+  int get playerCount => players.length;
 
   double get totalCost {
     double courtCost = 0;
@@ -42,6 +44,9 @@ class Game {
       final duration = schedule.endTime.difference(schedule.startTime);
       courtCost += (duration.inMinutes / 60.0) * courtRate;
     }
-    return courtCost;
+
+    double shuttleCost = shuttlesUsed * shuttlePrice;
+    
+    return courtCost + shuttleCost;
   }
 }

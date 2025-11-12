@@ -107,7 +107,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
               style: TextStyle(
                 color: Colors.blueAccent, 
                 fontSize: 16,
-                fontWeight: FontWeight.bold
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -125,6 +125,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
                   child: Column(
                     children: [
                       // --- Default Court Name ---
+                      const SizedBox(height: 16),
                       InputField(
                         labelText: 'Default Court Name',
                         controller: _courtNameController,
@@ -177,17 +178,28 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
                       const SizedBox(height: 16),
                       
                       // --- Divide Equally Checkbox ---
-                      CheckboxListTile(
-                        title: const Text('Divide the court equally among players'),
-                        value: _divideEqually,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _divideEqually = newValue ?? true;
-                          });
-                        },
-                        controlAffinity: ListTileControlAffinity.leading, // Checkbox on the left
-                        contentPadding: EdgeInsets.zero,
-                        activeColor: Colors.blueAccent,
+                      Column(
+                        children: [
+                          CheckboxListTile(
+                            title: const Text('Divide the court equally among players'),
+                            value: _divideEqually,
+                            onChanged: (newValue) {
+                              setState(() {
+                                _divideEqually = newValue ?? true;
+                              });
+                            },
+                            controlAffinity: ListTileControlAffinity.leading, // Checkbox on the left
+                            contentPadding: EdgeInsets.zero,
+                            activeColor: Colors.blueAccent,
+                          ),
+                          // Text(
+                          //   'If unchecked, the court cost will be assigned per game instead of divided equally.',
+                          //   style: TextStyle(
+                          //     color: Colors.grey[600],
+                          //     fontSize: 12,
+                          //   ),
+                          // ),
+                        ],
                       ),
                     ],
                   ),

@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:player_profiles/model/player.dart';
 import 'package:player_profiles/screens/addplayer_screen.dart';
 import 'package:player_profiles/widgets/player_card.dart';
-import 'package:player_profiles/data/players_list.dart';
+// import 'package:player_profiles/data/players_list.dart'; // No longer needed here
 
 class PlayerProfilesScreen extends StatefulWidget {
-  const PlayerProfilesScreen({super.key});
+  // 1. Receives the master list
+  final List<Player> allPlayers;
+
+  const PlayerProfilesScreen({
+    super.key,
+    required this.allPlayers, // 2. Added to constructor
+  });
 
   @override
   State<PlayerProfilesScreen> createState() => _PlayerProfilesScreenState();
@@ -15,17 +21,18 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
   List<Player> filteredPlayers = [];
   final TextEditingController _searchController = TextEditingController();
 
-  final List<Player> _players = players;
+  // 3. The local list is GONE
 
   @override
   void initState() {
     super.initState();
-    filteredPlayers = List.from(_players);
+    // 4. Initialize filter from the WIDGET's list
+    filteredPlayers = List.from(widget.allPlayers);
   }
 
-  // Search Player Function
+  // 5. All functions now reference 'widget.allPlayers'
   void _searchPlayer(String query) {
-    final filtered = _players.where((player) {
+    final filtered = widget.allPlayers.where((player) {
       final nameLower = player.name.toLowerCase();
       final nicknameLower = player.nickname.toLowerCase();
       final searchLower = query.toLowerCase();
@@ -38,7 +45,6 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
     });
   }
 
-  // Add Player Function
   void _navigateToAddPlayer() async {
     final newPlayer = await Navigator.push<Player>(
       context,
@@ -47,24 +53,19 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
 
     if (newPlayer != null) {
       setState(() {
-        _players.add(newPlayer);
-        filteredPlayers = List.from(_players);
+        widget.allPlayers.add(newPlayer); // Add to the master list
+        filteredPlayers = List.from(widget.allPlayers);
       });
     }
   }
 
-  // Update Player Function
   void _updatePlayer(Player updatedPlayer) {
     setState(() {
-      // Try multiple identifiers since we don't have ID
-      final index = _players.indexWhere((p) => 
-          p.name == updatedPlayer.name && 
-          p.contactNum == updatedPlayer.contactNum
-      );
+      final index = widget.allPlayers.indexWhere((p) => p.id == updatedPlayer.id);
       
       if (index != -1) {
-        _players[index] = updatedPlayer;
-        filteredPlayers = List.from(_players);
+        widget.allPlayers[index] = updatedPlayer;
+        filteredPlayers = List.from(widget.allPlayers);
         print('Player updated successfully!');
       } else {
         print('Player not found!');
@@ -72,25 +73,23 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
     });
   }
 
-  // Delete Player Function
   void _deletePlayer(Player deletedPlayer) {
     setState(() {
-      _players.removeWhere((p) => p.id == deletedPlayer.id); // Use ID instead of nickname
-      filteredPlayers = List.from(_players);
+      widget.allPlayers.removeWhere((p) => p.id == deletedPlayer.id);
+      filteredPlayers = List.from(widget.allPlayers);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // This is the build method with the corrected header
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 240, 240, 240),
-      // --- MODIFIED BODY ---
-      body: Column( // 1. Removed the 'SafeArea(top: false, ...)' wrapper
+      body: Column(
         children: [
           Container(
             width: double.infinity,
-            // 2. Removed vertical padding, kept horizontal
-            padding: const EdgeInsets.symmetric(horizontal: 20), 
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             decoration: const BoxDecoration(
               color: Colors.white,
               border: Border(
@@ -100,11 +99,9 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
                 ),
               ),
             ),
-            // 3. Add a new SafeArea here to wrap the header's content
-            child: SafeArea( 
-              bottom: false, // We only want the top padding
-              // 4. Add your vertical padding back INSIDE the SafeArea
-              child: Padding( 
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 24),
                 child: Column(
                   children: [
@@ -150,41 +147,33 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
                     const SizedBox(height: 16),
                     
                     // Search Bar
-                    Focus(
-                      onFocusChange: (hasFocus) {},
-                      child: Builder(
-                        builder: (context) {
-                          final hasFocus = Focus.of(context).hasFocus;
-                          return TextField(
-                            controller: _searchController,
-                            onChanged: _searchPlayer,
-                            cursorColor: Colors.blueAccent,
-                            decoration: InputDecoration(
-                              hintText: 'Search by name or nickname',
-                              prefixIcon: const Icon(Icons.search),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 202, 202, 202),
-                                  width: 1,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: const BorderSide(
-                                  color: Colors.blueAccent,
-                                  width: 2,
-                                )
-                              ),
-                              filled: true,
-                              fillColor: const Color.fromARGB(255, 251, 253, 255),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 0,
-                              ),
-                            ),
-                          );
-                        }
+                    TextField(
+                      controller: _searchController,
+                      onChanged: _searchPlayer,
+                      cursorColor: Colors.blueAccent,
+                      decoration: InputDecoration(
+                        hintText: 'Search by name or nickname',
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: Color.fromARGB(255, 202, 202, 202),
+                            width: 1,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: Colors.blueAccent,
+                            width: 2,
+                          )
+                        ),
+                        filled: true,
+                        fillColor: const Color.fromARGB(255, 251, 253, 255),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 0,
+                        ),
                       ),
                     ),
                   ],
@@ -193,7 +182,7 @@ class _PlayerProfilesScreenState extends State<PlayerProfilesScreen> {
             ),
           ),
           
-          // Search bar filters players and updates UI
+          // Player List
           Expanded(
             child: filteredPlayers.isEmpty
                 ? const Center(

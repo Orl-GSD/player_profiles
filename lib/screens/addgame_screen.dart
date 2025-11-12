@@ -1,15 +1,17 @@
-// lib/screens/add_game_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:player_profiles/model/game.dart';
 import 'package:player_profiles/model/game_schedule.dart';
-import 'package:player_profiles/model/settings.dart';
-import 'package:player_profiles/widgets/addgame_dialog.dart'; // We will create this
+import 'package:player_profiles/screens/addplayer_togame_screen.dart';
+import 'package:player_profiles/widgets/addgame_dialog.dart';
 import 'package:player_profiles/widgets/input_field.dart';
-import 'package:uuid/uuid.dart'; // Add uuid package: flutter pub add uuid
+import 'package:player_profiles/model/settings.dart';
+import 'package:uuid/uuid.dart';
+import 'package:player_profiles/model/player.dart';
 
 class AddGameScreen extends StatefulWidget {
-  const AddGameScreen({super.key});
+  final List<Player> allPlayers;
+
+  const AddGameScreen({super.key, required this.allPlayers});
 
   @override
   State<AddGameScreen> createState() => _AddGameScreenState();
@@ -29,8 +31,26 @@ class _AddGameScreenState extends State<AddGameScreen> {
   // --- State ---
   bool _divideEqually = true;
   bool _isLoading = true;
-  // This will store the court schedules (e.g., Court 1, 6-9 PM)
   final List<GameSchedule> _schedules = [];
+  List<Player> _selectedPlayers = [];
+
+  void _navigateToAddPlayers() async {
+    final newList = await Navigator.push<List<Player>>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddPlayerToGameScreen(
+          allPlayers: widget.allPlayers,
+          playersAlreadyInGame: _selectedPlayers,
+        ),
+      ),
+    );
+
+    if (newList != null) {
+      setState(() {
+        _selectedPlayers = newList;
+      });
+    }
+  } 
 
   @override
   void initState() {
@@ -59,10 +79,9 @@ class _AddGameScreenState extends State<AddGameScreen> {
   }
 
   void _openAddScheduleDialog() async {
-    // Show a dialog and wait for a new schedule to be returned
     final newSchedule = await showDialog<GameSchedule>(
       context: context,
-      builder: (ctx) => const AddGameScheduleDialog(), // We'll create this dialog
+      builder: (ctx) => const AddGameScheduleDialog(),
     );
 
     if (newSchedule != null) {
@@ -73,13 +92,11 @@ class _AddGameScreenState extends State<AddGameScreen> {
   }
 
   void _saveGame() {
-    // 1. Validate the form
     final isValid = _formKey.currentState!.validate();
     if (!isValid) {
       return;
     }
     
-    // 2. Check if at least one schedule was added
     if (_schedules.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -90,18 +107,18 @@ class _AddGameScreenState extends State<AddGameScreen> {
       return;
     }
 
-    // 3. Create the new Game object
     final newGame = Game(
-      id: _uuid.v4(), // Generate a unique ID
+      id: _uuid.v4(),
       gameTitle: _gameTitleController.text,
       courtName: _courtNameController.text,
       courtRate: double.tryParse(_courtRateController.text) ?? 0.0,
       shuttlePrice: double.tryParse(_shuttlePriceController.text) ?? 0.0,
       divideCourtEqually: _divideEqually,
-      schedules: _schedules, // Add the list of schedules
+      schedules: _schedules,
+      players: _selectedPlayers,
+      shuttlesUsed: 0,
     );
-
-    // 4. Return the new game to the GamesScreen
+    
     Navigator.pop(context, newGame);
   }
   
@@ -120,9 +137,8 @@ class _AddGameScreenState extends State<AddGameScreen> {
           ),
         ),
         actions: [
-          // Cancel Button
           TextButton(
-            onPressed: () => Navigator.pop(context), // Just close the screen
+            onPressed: () => Navigator.pop(context),
             child: const Text('Cancel',
               style: TextStyle(color: Colors.blueAccent, fontSize: 16),
             ),
@@ -155,7 +171,6 @@ class _AddGameScreenState extends State<AddGameScreen> {
                           'Schedules & Courts',
                           style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        // "Add Schedule" Button
                         IconButton.filled(
                           icon: const Icon(Icons.add),
                           onPressed: _openAddScheduleDialog,
@@ -164,12 +179,11 @@ class _AddGameScreenState extends State<AddGameScreen> {
                       ],
                     ),
                     
-                    // --- List of Added Schedules ---
                     _schedules.isEmpty
                         ? const Center(
                             child: Padding(
                               padding: EdgeInsets.all(16.0),
-                              child: Text('No schedules added yet. Tap (+) to add one.', style: TextStyle(color: Colors.grey)),
+                              child: Text('No schedules added yet.', style: TextStyle(color: Colors.grey)),
                             ),
                           )
                         : ListView.builder(
@@ -179,10 +193,10 @@ class _AddGameScreenState extends State<AddGameScreen> {
                             itemBuilder: (ctx, index) {
                               final schedule = _schedules[index];
                               return Card(
-                                color: const Color.fromARGB(255, 255, 255, 255),
+                                color: Colors.white,
                                 child: ListTile(
                                   leading: const Icon(Icons.timer),
-                                  title: Text('Court ${schedule.courtNumber} (${schedule.timeRangeString})'),
+                                  title: Text('${schedule.courtNumber} (${schedule.timeRangeString})'),
                                   subtitle: Text(schedule.dateString),
                                   trailing: IconButton(
                                     icon: const Icon(Icons.delete_outline, color: Colors.red),
@@ -196,15 +210,68 @@ class _AddGameScreenState extends State<AddGameScreen> {
                               );
                             },
                           ),
-                    const Divider(height: 32),
-                    
+                    const Divider(height: 32, color: Color.fromARGB(255, 187, 187, 187)),
+
+                    // --- Players Section ---
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Players (${_selectedPlayers.length})',
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        IconButton.filled(
+                          icon: const Icon(Icons.add),
+                          onPressed: _navigateToAddPlayers,
+                          style: IconButton.styleFrom(backgroundColor: Colors.blueAccent),
+                        ),
+                      ],
+                    ),
+                    _selectedPlayers.isEmpty
+                        ? const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Text('No players added yet.', style: TextStyle(color: Colors.grey)),
+                            ),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: _selectedPlayers.length,
+                            itemBuilder: (ctx, index) {
+                              final player = _selectedPlayers[index];
+                              return Card(
+                                color: Colors.white,
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundColor: Colors.blueAccent,
+                                    child: Text(
+                                      player.nickname.isNotEmpty ? player.nickname[0].toUpperCase() : '?',
+                                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  title: Text(player.nickname),
+                                  subtitle: Text(player.name),
+                                  trailing: IconButton(
+                                    icon: const Icon(Icons.delete_outline, color: Colors.red),
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedPlayers.removeAt(index);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                    const Divider(height: 32, color: Color.fromARGB(255, 187, 187, 187)),
+
                     // --- Details Section ---
                     Text(
                       'Game Details',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
-                    // --- Court Name ---
                     InputField(
                       labelText: 'Court Name',
                       controller: _courtNameController,
@@ -212,7 +279,6 @@ class _AddGameScreenState extends State<AddGameScreen> {
                       validator: (val) => (val == null || val.isEmpty) ? 'Required' : null,
                     ),
                     const SizedBox(height: 16),
-                    // --- Court Rate ---
                     InputField(
                       labelText: 'Court Rate (per hour)',
                       controller: _courtRateController,
@@ -226,7 +292,6 @@ class _AddGameScreenState extends State<AddGameScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    // --- Shuttle Price ---
                     InputField(
                       labelText: 'Shuttlecock Price',
                       controller: _shuttlePriceController,
@@ -239,22 +304,33 @@ class _AddGameScreenState extends State<AddGameScreen> {
                         return null;
                       },
                     ),
-                    // --- Checkbox ---
-                    CheckboxListTile(
-                      title: const Text('Divide court equally among players'),
-                      value: _divideEqually,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _divideEqually = newValue ?? true;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: EdgeInsets.zero,
-                      activeColor: Colors.blueAccent,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 16),
+                        CheckboxListTile(
+                          title: const Text('Divide court equally among players'),
+                          value: _divideEqually,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _divideEqually = newValue ?? true;
+                            });
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,
+                          contentPadding: EdgeInsets.zero,
+                          activeColor: Colors.blueAccent,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          // child: Text(
+                          //   'If unchecked, court cost will not be divided among players by default.',
+                          //   style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                          // ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 32),
                     
-                    // --- Save Button ---
                     ElevatedButton(
                       onPressed: _saveGame,
                       style: ElevatedButton.styleFrom(

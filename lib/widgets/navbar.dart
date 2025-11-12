@@ -2,10 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:player_profiles/screens/games_screen.dart';
-//import 'package:player_profiles/screens/games_screen.dart';
 import 'package:player_profiles/screens/playerprofiles_screen.dart';
 import 'package:player_profiles/screens/usersettings_screen.dart';
-//import 'package:player_profiles/screens/user_settings_screen.dart';
+import 'package:player_profiles/data/players_list.dart';
+import 'package:player_profiles/data/games_list.dart';
+import 'package:player_profiles/model/player.dart';
+import 'package:player_profiles/model/game.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
@@ -18,11 +20,14 @@ class _NavBar extends State<NavBar> {
   // Holds the current selected tab index
   int _selectedIndex = 0;
 
+  final List<Player> _allPlayers = List.from(players);
+  final List<Game> _allGames = List.from(games);
+
   // The list of screens that correspond to the tabs
-  final List<Widget> _screens = <Widget>[
-    PlayerProfilesScreen(),
-    GamesScreen(),
-    UserSettingsScreen(),
+  List<Widget> get _screens => <Widget>[
+    PlayerProfilesScreen(allPlayers: _allPlayers),
+    GamesScreen(allGames: _allGames, allPlayers: _allPlayers),
+    const UserSettingsScreen(),
   ];
 
   // This function is called when a tab is tapped
